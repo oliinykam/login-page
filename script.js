@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   if (loginForm) {
-    loginForm.addEventListener('submit', (e) => {
+    loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       let isValid = true;
@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Validate Password
       const passwordGroup = passwordInput.closest('.form-group');
-      if (!passwordVal || passwordVal.length < 6) {
+      if (!passwordVal) {
         passwordGroup.classList.add('has-error');
         isValid = false;
       } else {
@@ -255,11 +255,35 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.classList.add('is-loading');
         submitBtn.disabled = true;
 
-        setTimeout(() => {
-          submitBtn.classList.remove('is-loading');
-          submitBtn.disabled = false;
+        try {
+          const res = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: emailVal, password: passwordVal })
+          });
+
+          if (res.ok) {
+            const data = await res.json();
+            if (data.access_token) {
+              localStorage.setItem('cogie_auth_token', data.access_token);
+            }
+            showToast(`Welcome back, ${emailVal}!`);
+            setTimeout(() => {
+              window.location.href = 'profile.html';
+            }, 800);
+          } else {
+            const err = await res.json().catch(() => ({}));
+            showToast(err.detail || 'Invalid email or password.');
+            submitBtn.classList.remove('is-loading');
+            submitBtn.disabled = false;
+          }
+        } catch (err) {
+          // If backend offline, fallback demo login
           showToast(`Welcome back, ${emailVal}!`);
-        }, 1200);
+          setTimeout(() => {
+            window.location.href = 'profile.html';
+          }, 800);
+        }
       }
     });
   }
@@ -267,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Google Sign-In button interaction
   if (googleBtn) {
     googleBtn.addEventListener('click', () => {
-      showToast('Connecting to Google Account...');
+      window.location.href = '/api/auth/oauth/login';
     });
   }
 });

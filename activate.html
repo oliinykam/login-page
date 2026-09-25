@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cogie — Account Activation</title>
+  <meta name="description" content="Activate your Cogie account to start exploring." />
+  
+  <!-- Google Fonts: Bodoni Moda / Playfair Display & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Background ambient atmosphere -->
+  <div class="ambient-background"></div>
+
+  <main class="page-container">
+    <div class="auth-card" id="authCard">
+      
+      <!-- Left Visual Hero Panel -->
+      <section class="hero-panel" id="heroPanel" aria-label="Account Activation Artwork">
+        <div class="hero-bg-wrapper">
+          <img src="assets/waves.jpg" alt="Vibrant fluid abstract ribbons" class="hero-bg-img" id="heroBgImg" />
+          <div class="hero-overlay"></div>
+          <div class="hero-shine" id="heroShine"></div>
+        </div>
+
+        <div class="hero-content">
+          <!-- Top Label with Divider -->
+          <div class="quote-header">
+            <span class="quote-label">ACCOUNT VERIFICATION</span>
+            <div class="quote-line"></div>
+          </div>
+
+          <!-- Bottom Quote Main Text -->
+          <div class="quote-body">
+            <h1 class="quote-headline">
+              Unlock<br>
+              Your Full<br>
+              Potential
+            </h1>
+            <p class="quote-subtext">
+              Activating your email verifies your identity and secures your workspace with enterprise-grade standards.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Activation Panel -->
+      <section class="form-panel" aria-label="Activation Status">
+        <div class="form-panel-inner" style="justify-content: center;">
+          
+          <!-- State 1: Verifying in progress -->
+          <div class="activation-state-box" id="stateVerifying">
+            <div class="btn-spinner" style="display:inline-block; width: 40px; height: 40px; border-width: 3px; border-top-color: #111827; border-color: rgba(0,0,0,0.1) rgba(0,0,0,0.1) rgba(0,0,0,0.1) #111827;"></div>
+            <h2 class="welcome-title" style="margin-top: 1.5rem; font-size: 2rem;">Activating Account...</h2>
+            <p class="welcome-subtitle">Please wait while we verify your activation token</p>
+          </div>
+
+          <!-- State 2: Success -->
+          <div class="activation-state-box" id="stateSuccess" style="display: none;">
+            <div class="success-icon-wrapper">
+              <svg class="success-check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+            </div>
+            <h2 class="welcome-title" style="font-size: 2.15rem;">Account Activated!</h2>
+            <p class="success-description">
+              Your email address has been successfully verified. Your account is now active and ready to use.
+            </p>
+            <div class="button-group" style="width: 100%; max-width: 320px; margin-top: 1.5rem;">
+              <a href="index.html" class="btn btn-primary" style="text-decoration: none;">
+                <span class="btn-text">Proceed to Sign In</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- State 3: Error / Expired -->
+          <div class="activation-state-box" id="stateError" style="display: none;">
+            <div class="success-icon-wrapper" style="background: #fef2f2; border-color: #fecaca; color: #ef4444; box-shadow: 0 10px 20px -5px rgba(239, 68, 68, 0.2);">
+              <svg class="success-check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="15" y1="9" x2="9" y2="15"></line>
+                <line x1="9" y1="9" x2="15" y2="15"></line>
+              </svg>
+            </div>
+            <h2 class="welcome-title" style="font-size: 2rem;">Activation Failed</h2>
+            <p class="success-description" id="errorMessageText">
+              The activation link is invalid, expired, or has already been used.
+            </p>
+            <div class="button-group" style="width: 100%; max-width: 320px; margin-top: 1.5rem;">
+              <a href="index.html" class="btn btn-primary" style="text-decoration: none;">
+                <span class="btn-text">Back to Sign In</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Bottom Footer -->
+          <footer class="form-footer" style="margin-top: 2rem;">
+            <p class="footer-text">
+              Need help? <a href="index.html" class="signup-link">Contact Support</a>
+            </p>
+          </footer>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Notification Toast -->
+  <div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+  <script type="module" src="activate.js"></script>
+</body>
+</html>

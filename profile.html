@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cogie — User Profile</title>
+  <meta name="description" content="Manage your Cogie account credentials, security, and 2FA authentication." />
+  
+  <!-- Google Fonts: Bodoni Moda / Playfair Display & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Background ambient atmosphere -->
+  <div class="ambient-background"></div>
+
+  <main class="page-container">
+    <div class="auth-card profile-card" id="authCard">
+      
+      <!-- Left Visual Hero Panel -->
+      <section class="hero-panel" id="heroPanel" aria-label="Account Overview">
+        <div class="hero-bg-wrapper">
+          <img src="assets/waves.jpg" alt="Vibrant fluid abstract ribbons" class="hero-bg-img" id="heroBgImg" />
+          <div class="hero-overlay"></div>
+          <div class="hero-shine" id="heroShine"></div>
+        </div>
+
+        <div class="hero-content">
+          <!-- Top Label with Divider -->
+          <div class="quote-header">
+            <span class="quote-label">ACCOUNT DASHBOARD</span>
+            <div class="quote-line"></div>
+          </div>
+
+          <!-- Bottom Quote Main Text -->
+          <div class="quote-body">
+            <h1 class="quote-headline">
+              Welcome<br>
+              To Your<br>
+              Account
+            </h1>
+            <p class="quote-subtext">
+              Manage your profile, security settings, and two-factor authentication in one secure place.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Profile Content Panel -->
+      <section class="form-panel profile-panel" aria-label="User Profile Details">
+        <div class="form-panel-inner profile-panel-inner">
+          
+          <!-- Loading State -->
+          <div class="profile-loading" id="profileLoading">
+            <div class="btn-spinner" style="display:inline-block; width: 32px; height: 32px; border-width: 3px; border-top-color: #111827; border-color: rgba(0,0,0,0.1) rgba(0,0,0,0.1) rgba(0,0,0,0.1) #111827;"></div>
+            <p style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted);">Loading profile...</p>
+          </div>
+
+          <!-- Main Profile Content (hidden until loaded) -->
+          <div class="profile-content-wrap" id="profileContentWrap" style="display: none;">
+            
+            <!-- User Header Card -->
+            <div class="profile-header-block">
+              <div class="profile-avatar-row">
+                <div class="profile-avatar" id="profileAvatar">U</div>
+                <div class="profile-header-info">
+                  <div class="profile-email-row">
+                    <h2 class="profile-email-text" id="userEmail">user@example.com</h2>
+                  </div>
+                  <div class="profile-badges-row">
+                    <span class="badge badge-role" id="userRoleBadge">User</span>
+                    <span class="badge badge-status" id="userStatusBadge">Active</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Profile Info Grid -->
+            <div class="profile-info-grid">
+              <div class="info-item">
+                <span class="info-label">Account ID</span>
+                <span class="info-value" id="userIdVal">#1</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Auth Method</span>
+                <span class="info-value" id="userAuthMethod">Password</span>
+              </div>
+            </div>
+
+            <!-- 2FA Management Section -->
+            <div class="section-card 2fa-card">
+              <div class="section-card-header">
+                <div class="section-title-row">
+                  <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                  </svg>
+                  <span class="section-title">Two-Factor Authentication (2FA)</span>
+                </div>
+                <span class="badge badge-2fa" id="twoFaStatusBadge">Disabled</span>
+              </div>
+
+              <!-- 2FA Disabled View: Enable Trigger -->
+              <div id="twoFaOffView" class="two-fa-view">
+                <p class="section-desc">
+                  Add an extra layer of security using an authenticator app (Google Authenticator, Authy).
+                </p>
+                <button type="button" class="btn btn-secondary" id="enable2FaBtn">
+                  <span>Enable 2FA</span>
+                </button>
+              </div>
+
+              <!-- 2FA Setup Flow (QR Code + Verification Code) -->
+              <div id="twoFaSetupView" class="two-fa-view" style="display: none;">
+                <p class="section-desc">
+                  1. Scan this QR code with your Authenticator app:
+                </p>
+                <div class="qr-container">
+                  <img id="qrCodeImg" src="" alt="2FA QR Code" class="qr-code-image" />
+                  <div class="secret-key-display">
+                    <span class="secret-label">Manual Key:</span>
+                    <code id="secretKeyText">------</code>
+                  </div>
+                </div>
+                <p class="section-desc" style="margin-top: 0.5rem;">
+                  2. Enter the 6-digit code from your app:
+                </p>
+                <div class="totp-input-row">
+                  <input
+                    type="text"
+                    id="totpInput"
+                    maxlength="6"
+                    class="form-input totp-input"
+                    placeholder="000000"
+                    autocomplete="one-time-code"
+                  />
+                  <button type="button" class="btn btn-primary" id="confirm2FaBtn">
+                    <span>Verify & Activate</span>
+                  </button>
+                </div>
+                <button type="button" class="btn-link" id="cancel2FaBtn">Cancel</button>
+              </div>
+
+              <!-- 2FA Enabled View -->
+              <div id="twoFaOnView" class="two-fa-view" style="display: none;">
+                <p class="section-desc text-success">
+                  ✓ Two-Factor Authentication is active on your account.
+                </p>
+                <button type="button" class="btn btn-danger-outline" id="disable2FaBtn">
+                  <span>Disable 2FA</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Actions Row -->
+            <div class="profile-actions-group">
+              <a href="admin.html" class="btn btn-secondary" id="adminPanelLink" style="display: none; text-decoration: none;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+                <span>Admin Panel</span>
+              </a>
+
+              <button type="button" class="btn btn-primary" id="logoutBtn">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                  <polyline points="16 17 21 12 16 7"></polyline>
+                  <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                <span>Sign Out</span>
+              </button>
+            </div>
+
+          </div>
+
+          <!-- Bottom Footer -->
+          <footer class="form-footer">
+            <p class="footer-text">
+              Signed in to Cogie Security Suite
+            </p>
+          </footer>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Notification Toast -->
+  <div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+  <script type="module" src="profile.js"></script>
+</body>
+</html>
