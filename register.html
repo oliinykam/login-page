@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cogie — Create Account</title>
+  <meta name="description" content="Create your Cogie account to start building your future today." />
+  
+  <!-- Google Fonts: Bodoni Moda / Playfair Display & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css" />
+  <!-- Google reCAPTCHA v2 API -->
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+  <!-- Background ambient atmosphere -->
+  <div class="ambient-background"></div>
+
+  <main class="page-container">
+    <div class="auth-card" id="authCard">
+      
+      <!-- Left Visual Hero Panel -->
+      <section class="hero-panel" id="heroPanel" aria-label="Quote and brand art">
+        <div class="hero-bg-wrapper">
+          <img src="assets/waves.jpg" alt="Vibrant fluid abstract ribbons" class="hero-bg-img" id="heroBgImg" />
+          <div class="hero-overlay"></div>
+          <div class="hero-shine" id="heroShine"></div>
+        </div>
+
+        <div class="hero-content">
+          <!-- Top Quote Label with Divider -->
+          <div class="quote-header">
+            <span class="quote-label">BEGIN YOUR JOURNEY</span>
+            <div class="quote-line"></div>
+          </div>
+
+          <!-- Bottom Quote Main Text -->
+          <div class="quote-body">
+            <h1 class="quote-headline">
+              Start<br>
+              Building<br>
+              Your Future
+            </h1>
+            <p class="quote-subtext">
+              Join thousands of creators and professionals achieving extraordinary results every single day.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Registration Form Panel -->
+      <section class="form-panel" aria-label="Sign up form">
+        <div class="form-panel-inner">
+          
+          <!-- Form Content Container -->
+          <div class="form-content" id="formContainer">
+            <div class="welcome-header">
+              <h2 class="welcome-title">Create Account</h2>
+              <p class="welcome-subtitle">Join Cogie today and get started in seconds</p>
+            </div>
+
+            <!-- Registration Form -->
+            <form class="login-form register-form" id="registerForm" novalidate>
+              
+              <!-- Email Input Group -->
+              <div class="form-group" id="emailGroup">
+                <label for="regEmail" class="form-label">Email Address</label>
+                <div class="input-wrapper">
+                  <input
+                    type="email"
+                    id="regEmail"
+                    name="email"
+                    class="form-input"
+                    placeholder="name@example.com"
+                    autocomplete="email"
+                    required
+                  />
+                </div>
+                <span class="error-message" id="emailError">Please enter a valid email address</span>
+              </div>
+
+              <!-- Password Input Group -->
+              <div class="form-group" id="passwordGroup">
+                <label for="regPassword" class="form-label">Password</label>
+                <div class="input-wrapper password-wrapper">
+                  <input
+                    type="password"
+                    id="regPassword"
+                    name="password"
+                    class="form-input"
+                    placeholder="Create a strong password"
+                    autocomplete="new-password"
+                    required
+                  />
+                  <button
+                    type="button"
+                    class="password-toggle-btn"
+                    id="passwordToggleBtn"
+                    aria-label="Toggle password visibility"
+                  >
+                    <!-- Eye Icon (Default: hidden password) -->
+                    <svg class="eye-icon eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    <!-- Eye Off Icon -->
+                    <svg class="eye-icon eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                      <line x1="1" y1="1" x2="23" y2="23"></line>
+                    </svg>
+                  </button>
+                </div>
+
+                <!-- Password Strength Meter -->
+                <div class="password-strength-container" id="passwordStrengthContainer">
+                  <div class="strength-bar-track">
+                    <div class="strength-bar-fill" id="strengthBarFill"></div>
+                  </div>
+                  <div class="strength-label-row">
+                    <span class="strength-text">Password strength:</span>
+                    <span class="strength-status" id="strengthStatus">Too weak</span>
+                  </div>
+                </div>
+
+                <!-- Password Live Checklist Criteria -->
+                <div class="password-criteria-list" id="passwordCriteriaList">
+                  <div class="criteria-item" id="ruleMinLength">
+                    <span class="criteria-icon">
+                      <svg viewBox="0 0 16 16" fill="currentColor">
+                        <circle cx="8" cy="8" r="3" />
+                      </svg>
+                    </span>
+                    <span class="criteria-text">At least 8 characters</span>
+                  </div>
+                  <div class="criteria-item" id="ruleUpperLower">
+                    <span class="criteria-icon">
+                      <svg viewBox="0 0 16 16" fill="currentColor">
+                        <circle cx="8" cy="8" r="3" />
+                      </svg>
+                    </span>
+                    <span class="criteria-text">Uppercase & lowercase letters</span>
+                  </div>
+                  <div class="criteria-item" id="ruleNumber">
+                    <span class="criteria-icon">
+                      <svg viewBox="0 0 16 16" fill="currentColor">
+                        <circle cx="8" cy="8" r="3" />
+                      </svg>
+                    </span>
+                    <span class="criteria-text">At least one number (0-9)</span>
+                  </div>
+                  <div class="criteria-item" id="ruleSpecial">
+                    <span class="criteria-icon">
+                      <svg viewBox="0 0 16 16" fill="currentColor">
+                        <circle cx="8" cy="8" r="3" />
+                      </svg>
+                    </span>
+                    <span class="criteria-text">Special character (!@#$%^&*...)</span>
+                  </div>
+                </div>
+
+                <span class="error-message" id="passwordError">Password does not meet the security requirements</span>
+              </div>
+
+              <!-- Confirm Password Input Group -->
+              <div class="form-group" id="confirmPasswordGroup">
+                <label for="regConfirmPassword" class="form-label">Confirm Password</label>
+                <div class="input-wrapper password-wrapper">
+                  <input
+                    type="password"
+                    id="regConfirmPassword"
+                    name="confirmPassword"
+                    class="form-input"
+                    placeholder="Re-enter your password"
+                    autocomplete="new-password"
+                    required
+                  />
+                  <button
+                    type="button"
+                    class="password-toggle-btn"
+                    id="confirmPasswordToggleBtn"
+                    aria-label="Toggle confirm password visibility"
+                  >
+                    <!-- Eye Icon -->
+                    <svg class="eye-icon eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    <!-- Eye Off Icon -->
+                    <svg class="eye-icon eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                      <line x1="1" y1="1" x2="23" y2="23"></line>
+                    </svg>
+                  </button>
+                </div>
+                <span class="error-message" id="confirmPasswordError">Passwords do not match</span>
+              </div>
+
+              <!-- CAPTCHA Widget Section -->
+              <div class="form-group captcha-group" id="captchaGroup">
+                <div class="captcha-wrapper">
+                  <!-- Google reCAPTCHA v2 Test Key (standard valid key for testing) -->
+                  <div
+                    class="g-recaptcha"
+                    id="recaptchaWidget"
+                    data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+                    data-callback="onCaptchaVerified"
+                    data-expired-callback="onCaptchaExpired"
+                  ></div>
+                </div>
+                <span class="error-message" id="captchaError">Please complete the CAPTCHA challenge</span>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="button-group">
+                <button type="submit" class="btn btn-primary" id="registerSubmitBtn">
+                  <span class="btn-text">Create Account</span>
+                  <span class="btn-spinner" aria-hidden="true"></span>
+                </button>
+              </div>
+
+            </form>
+          </div>
+
+          <!-- Success State View (Hidden by default, shown after registration) -->
+          <div class="registration-success-view" id="successView" style="display: none;">
+            <div class="success-icon-wrapper">
+              <svg class="success-check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+            </div>
+            <h2 class="welcome-title">Verify Your Email</h2>
+            <p class="success-description">
+              We've sent an activation link to <strong id="registeredEmailDisplay" class="registered-email-highlight">your email</strong>.
+            </p>
+            <div class="success-notice-box">
+              <svg class="notice-mail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+              <span>Please click the link in your email to activate your account before signing in.</span>
+            </div>
+            <div class="button-group" style="margin-top: 1.5rem;">
+              <a href="index.html" class="btn btn-primary" style="text-decoration: none;">
+                <span class="btn-text">Proceed to Sign In</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Bottom Footer -->
+          <footer class="form-footer">
+            <p class="footer-text">
+              Already have an account? <a href="index.html" class="signup-link">Sign In</a>
+            </p>
+          </footer>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Notification Toast -->
+  <div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+  <script src="register.js"></script>
+</body>
+</html>
