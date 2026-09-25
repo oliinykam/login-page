@@ -82,126 +82,118 @@
                 <span class="error-message" id="emailError">Please enter a valid email address</span>
               </div>
 
-              <!-- Password Input Group -->
-              <div class="form-group" id="passwordGroup">
-                <label for="regPassword" class="form-label">Password</label>
-                <div class="input-wrapper password-wrapper">
-                  <input
-                    type="password"
-                    id="regPassword"
-                    name="password"
-                    class="form-input"
-                    placeholder="Create a strong password"
-                    autocomplete="new-password"
-                    required
-                  />
-                  <button
-                    type="button"
-                    class="password-toggle-btn"
-                    id="passwordToggleBtn"
-                    aria-label="Toggle password visibility"
-                  >
-                    <!-- Eye Icon (Default: hidden password) -->
-                    <svg class="eye-icon eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                      <circle cx="12" cy="12" r="3"></circle>
-                    </svg>
-                    <!-- Eye Off Icon -->
-                    <svg class="eye-icon eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
-                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                      <line x1="1" y1="1" x2="23" y2="23"></line>
-                    </svg>
-                  </button>
+              <!-- Passwords Row (Side-by-side on desktop for compact height) -->
+              <div class="form-row-2">
+                <!-- Password Input Group -->
+                <div class="form-group" id="passwordGroup">
+                  <label for="regPassword" class="form-label">Password</label>
+                  <div class="input-wrapper password-wrapper">
+                    <input
+                      type="password"
+                      id="regPassword"
+                      name="password"
+                      class="form-input"
+                      placeholder="Password"
+                      autocomplete="new-password"
+                      required
+                    />
+                    <button
+                      type="button"
+                      class="password-toggle-btn"
+                      id="passwordToggleBtn"
+                      aria-label="Toggle password visibility"
+                    >
+                      <svg class="eye-icon eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                      </svg>
+                      <svg class="eye-icon eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                      </svg>
+                    </button>
+                  </div>
                 </div>
 
+                <!-- Confirm Password Input Group -->
+                <div class="form-group" id="confirmPasswordGroup">
+                  <label for="regConfirmPassword" class="form-label">Confirm Password</label>
+                  <div class="input-wrapper password-wrapper">
+                    <input
+                      type="password"
+                      id="regConfirmPassword"
+                      name="confirmPassword"
+                      class="form-input"
+                      placeholder="Confirm"
+                      autocomplete="new-password"
+                      required
+                    />
+                    <button
+                      type="button"
+                      class="password-toggle-btn"
+                      id="confirmPasswordToggleBtn"
+                      aria-label="Toggle confirm password visibility"
+                    >
+                      <svg class="eye-icon eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                      </svg>
+                      <svg class="eye-icon eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Compact Password Validation & Checklist Block -->
+              <div class="password-validation-block">
                 <!-- Password Strength Meter -->
                 <div class="password-strength-container" id="passwordStrengthContainer">
                   <div class="strength-bar-track">
                     <div class="strength-bar-fill" id="strengthBarFill"></div>
                   </div>
                   <div class="strength-label-row">
-                    <span class="strength-text">Password strength:</span>
+                    <span class="strength-text">Strength:</span>
                     <span class="strength-status" id="strengthStatus">Too weak</span>
                   </div>
                 </div>
 
-                <!-- Password Live Checklist Criteria -->
+                <!-- Password Live Checklist Criteria (Compact 2x2 grid) -->
                 <div class="password-criteria-list" id="passwordCriteriaList">
                   <div class="criteria-item" id="ruleMinLength">
                     <span class="criteria-icon">
-                      <svg viewBox="0 0 16 16" fill="currentColor">
-                        <circle cx="8" cy="8" r="3" />
-                      </svg>
+                      <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="3" /></svg>
                     </span>
-                    <span class="criteria-text">At least 8 characters</span>
+                    <span class="criteria-text">8+ chars</span>
                   </div>
                   <div class="criteria-item" id="ruleUpperLower">
                     <span class="criteria-icon">
-                      <svg viewBox="0 0 16 16" fill="currentColor">
-                        <circle cx="8" cy="8" r="3" />
-                      </svg>
+                      <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="3" /></svg>
                     </span>
-                    <span class="criteria-text">Uppercase & lowercase letters</span>
+                    <span class="criteria-text">A-Z & a-z</span>
                   </div>
                   <div class="criteria-item" id="ruleNumber">
                     <span class="criteria-icon">
-                      <svg viewBox="0 0 16 16" fill="currentColor">
-                        <circle cx="8" cy="8" r="3" />
-                      </svg>
+                      <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="3" /></svg>
                     </span>
-                    <span class="criteria-text">At least one number (0-9)</span>
+                    <span class="criteria-text">1+ number</span>
                   </div>
                   <div class="criteria-item" id="ruleSpecial">
                     <span class="criteria-icon">
-                      <svg viewBox="0 0 16 16" fill="currentColor">
-                        <circle cx="8" cy="8" r="3" />
-                      </svg>
+                      <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="3" /></svg>
                     </span>
-                    <span class="criteria-text">Special character (!@#$%^&*...)</span>
+                    <span class="criteria-text">Special char</span>
                   </div>
                 </div>
 
-                <span class="error-message" id="passwordError">Password does not meet the security requirements</span>
-              </div>
-
-              <!-- Confirm Password Input Group -->
-              <div class="form-group" id="confirmPasswordGroup">
-                <label for="regConfirmPassword" class="form-label">Confirm Password</label>
-                <div class="input-wrapper password-wrapper">
-                  <input
-                    type="password"
-                    id="regConfirmPassword"
-                    name="confirmPassword"
-                    class="form-input"
-                    placeholder="Re-enter your password"
-                    autocomplete="new-password"
-                    required
-                  />
-                  <button
-                    type="button"
-                    class="password-toggle-btn"
-                    id="confirmPasswordToggleBtn"
-                    aria-label="Toggle confirm password visibility"
-                  >
-                    <!-- Eye Icon -->
-                    <svg class="eye-icon eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                      <circle cx="12" cy="12" r="3"></circle>
-                    </svg>
-                    <!-- Eye Off Icon -->
-                    <svg class="eye-icon eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
-                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                      <line x1="1" y1="1" x2="23" y2="23"></line>
-                    </svg>
-                  </button>
-                </div>
-                <span class="error-message" id="confirmPasswordError">Passwords do not match</span>
+                <span class="error-message" id="passwordError">Password must satisfy all rules & match</span>
               </div>
 
               <!-- CAPTCHA Widget Section -->
               <div class="form-group captcha-group" id="captchaGroup">
                 <div class="captcha-wrapper">
-                  <!-- Google reCAPTCHA v2 Test Key (standard valid key for testing) -->
                   <div
                     class="g-recaptcha"
                     id="recaptchaWidget"
@@ -210,7 +202,7 @@
                     data-expired-callback="onCaptchaExpired"
                   ></div>
                 </div>
-                <span class="error-message" id="captchaError">Please complete the CAPTCHA challenge</span>
+                <span class="error-message" id="captchaError">Please complete the CAPTCHA</span>
               </div>
 
               <!-- Action Buttons -->

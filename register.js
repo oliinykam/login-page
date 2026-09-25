@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const emailGroup = document.getElementById('emailGroup');
   const passwordGroup = document.getElementById('passwordGroup');
   const confirmPasswordGroup = document.getElementById('confirmPasswordGroup');
+  const passwordValidationBlock = document.querySelector('.password-validation-block');
   const captchaGroup = document.getElementById('captchaGroup');
 
   const strengthBarFill = document.getElementById('strengthBarFill');
@@ -340,6 +341,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   passwordInput.addEventListener('input', () => {
     passwordGroup.classList.remove('has-error');
+    if (passwordValidationBlock) passwordValidationBlock.classList.remove('has-error');
     evaluatePassword();
     if (confirmPasswordInput.value) {
       validateConfirmPassword();
@@ -399,9 +401,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. Validate Password Rules
     if (!rules.allValid) {
       passwordGroup.classList.add('has-error');
+      if (passwordValidationBlock) passwordValidationBlock.classList.add('has-error');
       isValid = false;
     } else {
       passwordGroup.classList.remove('has-error');
+      if (passwordValidationBlock) passwordValidationBlock.classList.remove('has-error');
     }
 
     // 3. Validate Password Match
