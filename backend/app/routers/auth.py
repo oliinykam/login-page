@@ -22,7 +22,7 @@ from app.schemas.auth import (
     TokenResponse,
 )
 from app.security.passwords import hash_password, verify_password
-from app.security.jwt import create_access_token
+from app.security.jwt import create_access_token, create_temp_token
 from app.services.email import send_email, activation_email_html
 from app.config import get_settings
 
@@ -191,13 +191,8 @@ async def login(
             detail="Invalid email or password.",
         )
 
-    # Check if account is activated
-    if not user.is_active:
-        await _log(LoginStatus.FAILED)
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Account is not activated. Please check your email.",
-        )
+    # Allow login even if not activated yet, so user can access profile to see their status
+
 
     # Reset failed attempts on success
     user.failed_login_attempts = 0
@@ -205,6 +200,14 @@ async def login(
     await db.commit()
 
     await _log(LoginStatus.SUCCESS)
+
+    # If 2FA is enabled, return a short-lived temp token instead
+    if user.is_totp_enabled:
+        temp_token = create_temp_token(user.id)
+        return TokenResponse(
+            access_token=temp_token,
+            token_type="2fa_required",
+        )
 
     access_token = create_access_token(data={"sub": str(user.id)})
     return TokenResponse(access_token=access_token)

@@ -198,6 +198,76 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 
+  // 2FA step elements
+  const totpStep      = document.getElementById('totpStep');
+  const totpCode      = document.getElementById('totpCode');
+  const totpGroup     = document.getElementById('totpGroup');
+  const totpSubmitBtn = document.getElementById('totpSubmitBtn');
+  const totpBackBtn   = document.getElementById('totpBackBtn');
+  let pendingTempToken = null;
+
+  const showTotpStep = (tempToken) => {
+    pendingTempToken = tempToken;
+    loginForm.style.display = 'none';
+    totpStep.style.display = 'block';
+    totpCode.value = '';
+    totpCode.focus();
+  };
+
+  const showLoginForm = () => {
+    pendingTempToken = null;
+    loginForm.style.display = 'block';
+    totpStep.style.display = 'none';
+  };
+
+  if (totpBackBtn) totpBackBtn.addEventListener('click', showLoginForm);
+
+  // Auto-submit when 6 digits entered
+  if (totpCode) {
+    totpCode.addEventListener('input', () => {
+      totpGroup.classList.remove('has-error');
+      totpCode.value = totpCode.value.replace(/\D/g, '').slice(0, 6);
+      if (totpCode.value.length === 6) totpSubmitBtn.click();
+    });
+  }
+
+  if (totpSubmitBtn) {
+    totpSubmitBtn.addEventListener('click', async () => {
+      const code = totpCode.value.trim();
+      if (code.length !== 6) {
+        totpGroup.classList.add('has-error');
+        return;
+      }
+
+      totpSubmitBtn.classList.add('is-loading');
+      totpSubmitBtn.disabled = true;
+
+      try {
+        const res = await apiFetch('/api/auth/2fa/verify', {
+          method: 'POST',
+          body: JSON.stringify({ temp_token: pendingTempToken, totp_code: code })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          setAccessToken(data.access_token);
+          showToast('Authenticated! Redirecting…');
+          setTimeout(() => { window.location.href = 'profile.html'; }, 700);
+        } else {
+          const err = await res.json().catch(() => ({}));
+          showToast(err.detail || 'Invalid code. Please try again.');
+          totpCode.value = '';
+          totpCode.focus();
+        }
+      } catch {
+        showToast('Could not connect to server.');
+      } finally {
+        totpSubmitBtn.classList.remove('is-loading');
+        totpSubmitBtn.disabled = false;
+      }
+    });
+  }
+
   if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -235,31 +305,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (res.ok) {
           const data = await res.json();
+
+          // 2FA required — switch to TOTP step
+          if (data.token_type === '2fa_required') {
+            submitBtn.classList.remove('is-loading');
+            submitBtn.disabled = false;
+            showTotpStep(data.access_token);
+            return;
+          }
+
           setAccessToken(data.access_token);
           showToast(`Welcome back, ${emailVal}!`);
           setTimeout(() => { window.location.href = 'profile.html'; }, 800);
 
         } else if (res.status === 423) {
-          // Account temporarily locked (brute-force protection)
           const err = await res.json().catch(() => ({}));
           showToast(err.detail || 'Account is temporarily locked. Try again later.');
-          submitBtn.classList.remove('is-loading');
-          submitBtn.disabled = false;
 
         } else if (res.status === 403) {
-          // Account not yet activated
           showToast('Account not activated. Please check your email inbox.');
-          submitBtn.classList.remove('is-loading');
-          submitBtn.disabled = false;
 
         } else {
           const err = await res.json().catch(() => ({}));
           showToast(err.detail || 'Invalid email or password.');
-          submitBtn.classList.remove('is-loading');
-          submitBtn.disabled = false;
         }
-      } catch (err) {
+      } catch {
         showToast('Could not connect to server. Please try again.');
+      } finally {
         submitBtn.classList.remove('is-loading');
         submitBtn.disabled = false;
       }

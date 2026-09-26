@@ -10,3 +10,6 @@ python-dotenv
 pydantic-settings
 email-validator
 httpx
+pyotp
+qrcode[pil]
+pillow

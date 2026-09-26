@@ -144,6 +144,44 @@
               </div>
 
             </form>
+
+            <!-- 2FA Verification Step (hidden until needed) -->
+            <div class="totp-step" id="totpStep" style="display:none;">
+              <div class="welcome-header">
+                <div class="totp-shield-icon">🔐</div>
+                <h2 class="welcome-title" style="font-size:1.4rem;">Two-Factor Auth</h2>
+                <p class="welcome-subtitle">Enter the 6-digit code from your Google Authenticator app</p>
+              </div>
+
+              <div class="form-group" id="totpGroup">
+                <label for="totpCode" class="form-label">Authentication Code</label>
+                <div class="input-wrapper">
+                  <input
+                    type="text"
+                    id="totpCode"
+                    name="totp_code"
+                    class="form-input"
+                    placeholder="000000"
+                    maxlength="6"
+                    autocomplete="one-time-code"
+                    inputmode="numeric"
+                    pattern="[0-9]*"
+                  />
+                </div>
+                <span class="error-message" id="totpError">Please enter your 6-digit code</span>
+              </div>
+
+              <div class="button-group">
+                <button type="button" class="btn btn-primary" id="totpSubmitBtn">
+                  <span class="btn-text">Verify</span>
+                  <span class="btn-spinner" aria-hidden="true"></span>
+                </button>
+                <button type="button" class="btn btn-secondary" id="totpBackBtn">
+                  ← Back to Login
+                </button>
+              </div>
+            </div>
+
           </div>
 
           <!-- Bottom Footer -->
