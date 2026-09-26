@@ -81,7 +81,8 @@ async def toggle_lock(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found.")
 
     now = datetime.now(timezone.utc)
-    is_currently_locked = user.locked_until and user.locked_until > now
+    locked_dt = user.locked_until.replace(tzinfo=timezone.utc) if user.locked_until and user.locked_until.tzinfo is None else user.locked_until
+    is_currently_locked = bool(locked_dt and locked_dt > now)
 
     if is_currently_locked:
         # Unlock

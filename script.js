@@ -222,6 +222,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (totpBackBtn) totpBackBtn.addEventListener('click', showLoginForm);
 
+  // Check URL parameters for OAuth errors or 2FA challenge
+  const urlParams = new URLSearchParams(window.location.search);
+  const oauthError = urlParams.get('error');
+  if (oauthError) {
+    showToast(`Google Sign-In: ${decodeURIComponent(oauthError)}`);
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+  const isTwoFa = urlParams.get('two_factor');
+  const tempTokenParam = urlParams.get('temp_token');
+  if (isTwoFa && tempTokenParam) {
+    showTotpStep(tempTokenParam);
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+
   // Auto-submit when 6 digits entered
   if (totpCode) {
     totpCode.addEventListener('input', () => {

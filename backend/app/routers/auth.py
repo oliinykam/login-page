@@ -116,14 +116,31 @@ async def register(
     )
 
 
+def _is_expired(dt: datetime | None) -> bool:
+    if dt is None:
+        return False
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt < datetime.now(timezone.utc)
+
+
+def _is_locked(dt: datetime | None) -> bool:
+    if dt is None:
+        return False
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt > datetime.now(timezone.utc)
+
+
 # ── Activate ───────────────────────────────────────────────────────────────────
 @router.get("/activate")
 async def activate_account(
     token: str,
     db: AsyncSession = Depends(get_db),
 ):
+    clean_token = token.strip()
     result = await db.execute(
-        select(User).where(User.activation_token == token)
+        select(User).where(User.activation_token == clean_token)
     )
     user: User | None = result.scalar_one_or_none()
 
@@ -133,7 +150,7 @@ async def activate_account(
             detail="Invalid or already used activation token.",
         )
 
-    if user.activation_token_expires and user.activation_token_expires < datetime.now(timezone.utc):
+    if _is_expired(user.activation_token_expires):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Activation token has expired. Please register again.",
@@ -172,7 +189,7 @@ async def login(
         await db.commit()
 
     # Check if account is locked
-    if user and user.locked_until and user.locked_until > datetime.now(timezone.utc):
+    if user and _is_locked(user.locked_until):
         await _log(LoginStatus.LOCKED)
         raise HTTPException(
             status_code=status.HTTP_423_LOCKED,

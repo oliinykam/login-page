@@ -20,7 +20,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app.database import engine
 from app.models import Base
-from app.routers import auth, users, admin, totp
+from app.routers import auth, users, admin, totp, oauth
 from app.config import get_settings
 
 settings = get_settings()
@@ -55,6 +55,7 @@ app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(admin.router)
 app.include_router(totp.router)
+app.include_router(oauth.router)
 
 # ── Serve frontend static files ────────────────────────────────────────────────
 # The frontend lives one directory above the backend folder.

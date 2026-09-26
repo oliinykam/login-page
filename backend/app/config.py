@@ -30,6 +30,11 @@ class Settings(BaseSettings):
     FIRST_ADMIN_EMAIL: str = "admin@example.com"
     FIRST_ADMIN_PASSWORD: str = "Admin1234!"
 
+    # Google OAuth 2.0 / OpenID Connect
+    GOOGLE_CLIENT_ID: str = ""
+    GOOGLE_CLIENT_SECRET: str = ""
+    GOOGLE_REDIRECT_URI: str = "http://127.0.0.1:8000/api/auth/oauth/callback"
+
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
 

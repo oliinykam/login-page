@@ -1,3 +1,3 @@
-from app.services import email
+from app.services import email, oauth
 
-__all__ = ["email"]
+__all__ = ["email", "oauth"]

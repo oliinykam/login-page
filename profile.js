@@ -1,6 +1,14 @@
-import { apiFetch, fetchCurrentUser, getAccessToken, logout, showToast } from './api.js';
+import { apiFetch, fetchCurrentUser, getAccessToken, setAccessToken, logout, showToast, getQueryParams } from './api.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
+  // Capture OAuth callback token if present in URL
+  const queryParams = getQueryParams();
+  const urlToken = queryParams.get('token');
+  if (urlToken) {
+    setAccessToken(urlToken);
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+
   // Check Authentication
   const token = getAccessToken();
   if (!token) {
