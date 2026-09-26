@@ -20,10 +20,12 @@ from app.schemas.auth import (
     RegisterResponse,
     LoginRequest,
     TokenResponse,
+    ForgotPasswordRequest,
+    ResetPasswordRequest,
 )
 from app.security.passwords import hash_password, verify_password
 from app.security.jwt import create_access_token, create_temp_token
-from app.services.email import send_email, activation_email_html
+from app.services.email import send_email, activation_email_html, password_reset_email_html
 from app.config import get_settings
 
 settings = get_settings()
@@ -36,6 +38,7 @@ router = APIRouter(prefix="/api/auth", tags=["auth"])
 # Maximum failed attempts before account lock
 MAX_FAILED_ATTEMPTS = 5
 LOCK_DURATION_MINUTES = 15
+RESET_TOKEN_EXPIRE_MINUTES = 15
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
@@ -228,3 +231,77 @@ async def login(
 
     access_token = create_access_token(data={"sub": str(user.id)})
     return TokenResponse(access_token=access_token)
+
+
+# ── Forgot password (Stage 8) ─────────────────────────────────────────────────
+@router.post("/forgot-password")
+async def forgot_password(
+    body: ForgotPasswordRequest,
+    db: AsyncSession = Depends(get_db),
+):
+    result = await db.execute(select(User).where(User.email == body.email))
+    user: User | None = result.scalars().first()
+
+    generic_response = {
+        "message": "If this email is registered, password reset instructions have been sent."
+    }
+
+    if not user:
+        return generic_response
+
+    # Generate one-time reset token (15-min lifetime)
+    reset_token = secrets.token_urlsafe(32)
+    expires_at = datetime.now(timezone.utc) + timedelta(minutes=RESET_TOKEN_EXPIRE_MINUTES)
+
+    user.reset_token = reset_token
+    user.reset_token_expires = expires_at
+    await db.commit()
+
+    reset_link = (
+        f"{settings.FRONTEND_BASE_URL}/reset-password.html"
+        f"?token={reset_token}"
+    )
+    await send_email(
+        to_email=body.email,
+        subject="Reset your password",
+        html_body=password_reset_email_html(reset_link),
+    )
+
+    return generic_response
+
+
+# ── Reset password (Stage 8) ──────────────────────────────────────────────────
+@router.post("/reset-password")
+async def reset_password(
+    body: ResetPasswordRequest,
+    db: AsyncSession = Depends(get_db),
+):
+    clean_token = body.token.strip()
+    result = await db.execute(select(User).where(User.reset_token == clean_token))
+    user: User | None = result.scalars().first()
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or already used password reset link.",
+        )
+
+    if _is_expired(user.reset_token_expires):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Password reset link has expired. Please request a new one.",
+        )
+
+    # Update password hash and revoke reset token
+    user.hashed_password = hash_password(body.new_password)
+    user.reset_token = None
+    user.reset_token_expires = None
+
+    # Reset any lockout due to previous failed attempts
+    user.failed_login_attempts = 0
+    user.locked_until = None
+
+    await db.commit()
+
+    return {"message": "Password reset successfully. You can now log in with your new password."}
+

@@ -68,3 +68,19 @@ class UserProfile(BaseModel):
     oauth_provider: str | None
 
     model_config = {"from_attributes": True}
+
+
+# ── Password reset (Stage 8) ──────────────────────────────────────────────────
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str
+
+    @field_validator("new_password")
+    @classmethod
+    def password_policy(cls, v: str) -> str:
+        return _validate_password_policy(v)
+

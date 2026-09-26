@@ -108,3 +108,69 @@ def activation_email_html(activation_link: str) -> str:
 </body>
 </html>
 """
+
+
+def password_reset_email_html(reset_link: str) -> str:
+    return f"""
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reset your password</title>
+</head>
+<body style="margin:0;padding:0;background:#0f0f1a;font-family:'Segoe UI',Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0f0f1a;padding:40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="560" cellpadding="0" cellspacing="0"
+               style="background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:16px;
+                      border:1px solid rgba(139,92,246,0.3);overflow:hidden;">
+          <!-- Header -->
+          <tr>
+            <td style="padding:32px 40px 24px;border-bottom:1px solid rgba(139,92,246,0.2);">
+              <h1 style="margin:0;font-size:22px;color:#a78bfa;letter-spacing:1px;">
+                🔑 Reset Your Password
+              </h1>
+            </td>
+          </tr>
+          <!-- Body -->
+          <tr>
+            <td style="padding:32px 40px;">
+              <p style="margin:0 0 16px;color:#c4c4d4;font-size:15px;line-height:1.6;">
+                We received a request to reset your password. Click the button below to set a new password.
+                This link is valid for <strong style="color:#a78bfa;">15 minutes</strong>.
+              </p>
+              <div style="text-align:center;margin:32px 0;">
+                <a href="{reset_link}"
+                   style="display:inline-block;padding:14px 36px;
+                          background:linear-gradient(135deg,#7c3aed,#a855f7);
+                          color:#fff;font-size:15px;font-weight:600;
+                          border-radius:8px;text-decoration:none;letter-spacing:0.5px;">
+                  Reset Password
+                </a>
+              </div>
+              <p style="margin:0;color:#6b7280;font-size:13px;line-height:1.6;">
+                If the button doesn't work, paste this link into your browser:<br>
+                <a href="{reset_link}" style="color:#a78bfa;word-break:break-all;">
+                  {reset_link}
+                </a>
+              </p>
+            </td>
+          </tr>
+          <!-- Footer -->
+          <tr>
+            <td style="padding:20px 40px;border-top:1px solid rgba(139,92,246,0.2);">
+              <p style="margin:0;color:#4b5563;font-size:12px;">
+                If you didn't request a password reset, you can safely ignore this email. Your password will remain unchanged.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+"""
+
