@@ -1,3 +1,5 @@
+import { setAccessToken, setStoredUser, apiFetch } from './api.js';
+
 document.addEventListener('DOMContentLoaded', () => {
   // Elements
   const loginForm = document.getElementById('loginForm');
@@ -24,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let isHovering = false;
     let bounds = null;
 
-    // Target values (from mouse)
     let targetRotateX = 0;
     let targetRotateY = 0;
     let targetImgX = 0;
@@ -34,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let targetShineX = 50;
     let targetShineY = 50;
 
-    // Current interpolated values
     let currentRotateX = 0;
     let currentRotateY = 0;
     let currentImgX = 0;
@@ -46,11 +46,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let rafId = null;
 
-    // Linear interpolation helper
     const lerp = (start, end, factor) => start + (end - start) * factor;
 
     const updateAnimation = () => {
-      // Smooth lerp factor (0.1 for fluid response)
       const factor = isHovering ? 0.1 : 0.06;
 
       currentRotateX = lerp(currentRotateX, targetRotateX, factor);
@@ -62,21 +60,17 @@ document.addEventListener('DOMContentLoaded', () => {
       currentShineX = lerp(currentShineX, targetShineX, factor);
       currentShineY = lerp(currentShineY, targetShineY, factor);
 
-      // Apply 3D rotation & depth to hero panel
       heroPanel.style.transform = `perspective(1000px) rotateX(${currentRotateX.toFixed(2)}deg) rotateY(${currentRotateY.toFixed(2)}deg) translateZ(0)`;
 
-      // Apply parallax displacement to background image
       if (heroBgImg) {
         heroBgImg.style.transform = `translate3d(${currentImgX.toFixed(2)}px, ${currentImgY.toFixed(2)}px, -20px) scale(1.12)`;
       }
 
-      // Apply specular glare position
       if (heroShine) {
         heroPanel.style.setProperty('--shine-x', `${currentShineX.toFixed(1)}%`);
         heroPanel.style.setProperty('--shine-y', `${currentShineY.toFixed(1)}%`);
       }
 
-      // Apply parallax layering to foreground typography
       if (quoteHeader) {
         quoteHeader.style.transform = `translate3d(${currentTextX.toFixed(2)}px, ${currentTextY.toFixed(2)}px, 32px)`;
       }
@@ -84,7 +78,6 @@ document.addEventListener('DOMContentLoaded', () => {
         quoteBody.style.transform = `translate3d(${(currentTextX * 1.3).toFixed(2)}px, ${(currentTextY * 1.3).toFixed(2)}px, 48px)`;
       }
 
-      // Stop loop when idle and back near zero
       const isSettled =
         !isHovering &&
         Math.abs(currentRotateX) < 0.05 &&
@@ -95,7 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!isSettled) {
         rafId = requestAnimationFrame(updateAnimation);
       } else {
-        // Reset precisely
         heroPanel.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0)';
         if (heroBgImg) heroBgImg.style.transform = 'scale(1.08) translate3d(0, 0, -20px)';
         if (quoteHeader) quoteHeader.style.transform = 'translate3d(0, 0, 30px)';
@@ -122,23 +114,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const mouseX = e.clientX - bounds.left;
       const mouseY = e.clientY - bounds.top;
+      const normX = (mouseX / bounds.width) * 2 - 1;
+      const normY = (mouseY / bounds.height) * 2 - 1;
 
-      const normX = (mouseX / bounds.width) * 2 - 1; // -1 to +1
-      const normY = (mouseY / bounds.height) * 2 - 1; // -1 to +1
-
-      // Subtle, elegant 3D tilt max angles (deg)
       const maxTilt = 3.5;
       targetRotateX = -normY * maxTilt;
       targetRotateY = normX * maxTilt;
-
-      // Subtle parallax shifts
-      targetImgX = -normX * 8; // opposite direction for subtle depth
+      targetImgX = -normX * 8;
       targetImgY = -normY * 8;
-
-      targetTextX = normX * 3; // subtle forward pop
+      targetTextX = normX * 3;
       targetTextY = normY * 3;
-
-      // Glare highlight tracking percentage
       targetShineX = (mouseX / bounds.width) * 100;
       targetShineY = (mouseY / bounds.height) * 100;
 
@@ -148,8 +133,6 @@ document.addEventListener('DOMContentLoaded', () => {
     heroPanel.addEventListener('mouseleave', () => {
       isHovering = false;
       heroPanel.classList.remove('is-tilting');
-
-      // Return smoothly to center
       targetRotateX = 0;
       targetRotateY = 0;
       targetImgX = 0;
@@ -158,15 +141,11 @@ document.addEventListener('DOMContentLoaded', () => {
       targetTextY = 0;
       targetShineX = 50;
       targetShineY = 50;
-
       startAnimationLoop();
     });
 
-    // Handle window resize dynamically
     window.addEventListener('resize', () => {
-      if (isHovering) {
-        bounds = heroPanel.getBoundingClientRect();
-      }
+      if (isHovering) bounds = heroPanel.getBoundingClientRect();
     });
   }
 
@@ -210,20 +189,14 @@ document.addEventListener('DOMContentLoaded', () => {
      ========================================================================== */
   const clearError = (input) => {
     const formGroup = input.closest('.form-group');
-    if (formGroup) {
-      formGroup.classList.remove('has-error');
-    }
+    if (formGroup) formGroup.classList.remove('has-error');
   };
 
   [emailInput, passwordInput].forEach((input) => {
-    if (input) {
-      input.addEventListener('input', () => clearError(input));
-    }
+    if (input) input.addEventListener('input', () => clearError(input));
   });
 
-  const validateEmail = (email) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
-  };
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 
   if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
@@ -233,7 +206,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const emailVal = emailInput.value.trim();
       const passwordVal = passwordInput.value;
 
-      // Validate Email
       const emailGroup = emailInput.closest('.form-group');
       if (!validateEmail(emailVal)) {
         emailGroup.classList.add('has-error');
@@ -242,7 +214,6 @@ document.addEventListener('DOMContentLoaded', () => {
         emailGroup.classList.remove('has-error');
       }
 
-      // Validate Password
       const passwordGroup = passwordInput.closest('.form-group');
       if (!passwordVal) {
         passwordGroup.classList.add('has-error');
@@ -251,44 +222,51 @@ document.addEventListener('DOMContentLoaded', () => {
         passwordGroup.classList.remove('has-error');
       }
 
-      if (isValid) {
-        submitBtn.classList.add('is-loading');
-        submitBtn.disabled = true;
+      if (!isValid) return;
 
-        try {
-          const res = await fetch('/api/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: emailVal, password: passwordVal })
-          });
+      submitBtn.classList.add('is-loading');
+      submitBtn.disabled = true;
 
-          if (res.ok) {
-            const data = await res.json();
-            if (data.access_token) {
-              localStorage.setItem('cogie_auth_token', data.access_token);
-            }
-            showToast(`Welcome back, ${emailVal}!`);
-            setTimeout(() => {
-              window.location.href = 'profile.html';
-            }, 800);
-          } else {
-            const err = await res.json().catch(() => ({}));
-            showToast(err.detail || 'Invalid email or password.');
-            submitBtn.classList.remove('is-loading');
-            submitBtn.disabled = false;
-          }
-        } catch (err) {
-          // If backend offline, fallback demo login
+      try {
+        const res = await apiFetch('/api/auth/login', {
+          method: 'POST',
+          body: JSON.stringify({ email: emailVal, password: passwordVal })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          setAccessToken(data.access_token);
           showToast(`Welcome back, ${emailVal}!`);
-          setTimeout(() => {
-            window.location.href = 'profile.html';
-          }, 800);
+          setTimeout(() => { window.location.href = 'profile.html'; }, 800);
+
+        } else if (res.status === 423) {
+          // Account temporarily locked (brute-force protection)
+          const err = await res.json().catch(() => ({}));
+          showToast(err.detail || 'Account is temporarily locked. Try again later.');
+          submitBtn.classList.remove('is-loading');
+          submitBtn.disabled = false;
+
+        } else if (res.status === 403) {
+          // Account not yet activated
+          showToast('Account not activated. Please check your email inbox.');
+          submitBtn.classList.remove('is-loading');
+          submitBtn.disabled = false;
+
+        } else {
+          const err = await res.json().catch(() => ({}));
+          showToast(err.detail || 'Invalid email or password.');
+          submitBtn.classList.remove('is-loading');
+          submitBtn.disabled = false;
         }
+      } catch (err) {
+        showToast('Could not connect to server. Please try again.');
+        submitBtn.classList.remove('is-loading');
+        submitBtn.disabled = false;
       }
     });
   }
 
-  // Google Sign-In button interaction
+  // Google Sign-In button
   if (googleBtn) {
     googleBtn.addEventListener('click', () => {
       window.location.href = '/api/auth/oauth/login';

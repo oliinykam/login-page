@@ -12,8 +12,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css" />
-  <!-- Google reCAPTCHA v2 API -->
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <!-- Cloudflare Turnstile -->
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
   <!-- Background ambient atmosphere -->
@@ -195,11 +195,12 @@
               <div class="form-group captcha-group" id="captchaGroup">
                 <div class="captcha-wrapper">
                   <div
-                    class="g-recaptcha"
-                    id="recaptchaWidget"
-                    data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+                    class="cf-turnstile"
+                    id="turnstileWidget"
+                    data-sitekey="0x4AAAAAAFDyLB7gEaAauzrp"
                     data-callback="onCaptchaVerified"
                     data-expired-callback="onCaptchaExpired"
+                    data-theme="dark"
                   ></div>
                 </div>
                 <span class="error-message" id="captchaError">Please complete the CAPTCHA</span>
@@ -258,6 +259,6 @@
   <!-- Notification Toast -->
   <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-  <script src="register.js"></script>
+  <script type="module" src="register.js"></script>
 </body>
 </html>

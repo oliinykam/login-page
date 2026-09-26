@@ -11,8 +11,12 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
+    # Cloudflare Turnstile
+    TURNSTILE_SECRET_KEY: str = ""
+
     # CORS
     FRONTEND_ORIGIN: str = "http://127.0.0.1:5500"
+    FRONTEND_BASE_URL: str = "http://127.0.0.1:8000"  # base URL for email links
 
     # SMTP
     SMTP_HOST: str = "localhost"

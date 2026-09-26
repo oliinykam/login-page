@@ -1,3 +1,5 @@
+import { apiFetch, showToast } from './api.js';
+
 document.addEventListener('DOMContentLoaded', () => {
   // Elements
   const registerForm = document.getElementById('registerForm');
@@ -353,7 +355,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ==========================================================================
-     CAPTCHA Callbacks & Verification
+     CAPTCHA Callbacks & Verification (Cloudflare Turnstile)
      ========================================================================== */
   let captchaToken = null;
 
@@ -367,12 +369,13 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const getCaptchaToken = () => {
-    if (typeof grecaptcha !== 'undefined') {
+    // Try Turnstile's JS API first, fall back to callback-stored token
+    if (typeof turnstile !== 'undefined') {
       try {
-        const response = grecaptcha.getResponse();
+        const response = turnstile.getResponse();
         if (response) return response;
       } catch (e) {
-        // Fallback or local environment bypass if widget not initialized
+        // widget not yet rendered
       }
     }
     return captchaToken;
@@ -418,9 +421,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 4. Validate CAPTCHA
     const currentCaptchaToken = getCaptchaToken();
-    // Allow pass if reCAPTCHA is not reachable (e.g. offline/no network) or if solved
-    const hasRecaptchaLoaded = typeof grecaptcha !== 'undefined';
-    if (hasRecaptchaLoaded && !currentCaptchaToken) {
+    const hasTurnstileLoaded = typeof turnstile !== 'undefined';
+    if (hasTurnstileLoaded && !currentCaptchaToken) {
       captchaGroup.classList.add('has-error');
       isValid = false;
     } else {
@@ -437,51 +439,32 @@ document.addEventListener('DOMContentLoaded', () => {
     registerSubmitBtn.disabled = true;
 
     try {
-      // Simulate/Attempt backend registration POST request
       const payload = {
         email: emailVal,
         password: passwordVal,
-        captcha_token: currentCaptchaToken || 'test_token'
+        captcha_token: currentCaptchaToken || null
       };
 
-      // Optional real backend call if API exists, else graceful fallback
-      let success = true;
-      try {
-        const response = await fetch('/api/auth/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        if (response.ok) {
-          success = true;
-        } else if (response.status !== 404) {
-          const errData = await response.json().catch(() => ({}));
-          showToast(errData.detail || 'Registration failed. Please try again.');
-          registerSubmitBtn.classList.remove('is-loading');
-          registerSubmitBtn.disabled = false;
-          return;
-        }
-      } catch (err) {
-        // Backend not yet running, proceed with frontend demo flow
-        success = true;
-      }
+      const response = await apiFetch('/api/auth/register', {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      });
 
-      setTimeout(() => {
-        registerSubmitBtn.classList.remove('is-loading');
-        registerSubmitBtn.disabled = false;
-
-        // Show Success Activation Notice View
+      if (response.ok) {
         registeredEmailDisplay.textContent = emailVal;
         formContainer.style.display = 'none';
         successView.style.display = 'flex';
-
         showToast('Registration successful! Check your email.');
-      }, 1000);
+      } else {
+        const errData = await response.json().catch(() => ({}));
+        showToast(errData.detail || 'Registration failed. Please try again.');
+      }
 
     } catch (error) {
+      showToast('Could not connect to server. Please try again.');
+    } finally {
       registerSubmitBtn.classList.remove('is-loading');
       registerSubmitBtn.disabled = false;
-      showToast('An unexpected error occurred. Please try again.');
     }
   });
 });
