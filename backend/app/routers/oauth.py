@@ -150,7 +150,10 @@ async def oauth_callback(
 
     # 5. Cryptographically verify id_token
     try:
-        claims = await oauth_service.verify_google_id_token(id_token)
+        claims = await oauth_service.verify_google_id_token(
+            id_token,
+            access_token=token_data.get("access_token"),
+        )
     except Exception as exc:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

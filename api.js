@@ -5,8 +5,8 @@
 
 const API_BASE = ''; // Same-origin when served by FastAPI or configured backend
 
-export const TOKEN_KEY = 'cogie_auth_token';
-export const USER_KEY = 'cogie_user_data';
+export const TOKEN_KEY = 'auth_token';
+export const USER_KEY = 'user_data';
 
 // Token Management
 export function getAccessToken() {

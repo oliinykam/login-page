@@ -94,7 +94,11 @@ async def exchange_code_for_tokens(code: str) -> dict:
         return resp.json()
 
 
-async def verify_google_id_token(id_token_str: str, expected_client_id: str | None = None) -> dict:
+async def verify_google_id_token(
+    id_token_str: str,
+    expected_client_id: str | None = None,
+    access_token: str | None = None,
+) -> dict:
     """
     Cryptographically verify a Google id_token:
       1. Extract 'kid' and 'alg' from unverified header.
@@ -148,11 +152,13 @@ async def verify_google_id_token(id_token_str: str, expected_client_id: str | No
             algorithms=["RS256"],
             audience=client_id,
             issuer=GOOGLE_ISSUERS,
+            access_token=access_token,
             options={
                 "verify_signature": True,
                 "verify_aud": True,
                 "verify_iss": True,
                 "verify_exp": True,
+                "verify_at_hash": bool(access_token),
             },
         )
     except JWTError as e:
